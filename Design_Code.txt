@@ -1,0 +1,60 @@
+// ALU 4-bit Design
+module ALU_4bit (
+    input  [3:0] A, B,
+    input  [2:0] SEL,
+    output reg [3:0] RESULT,
+    output reg CARRY,
+    output reg ZERO
+);
+
+    reg [4:0] temp; // For carry bit in addition/subtraction
+
+    always @(*) begin
+        case (SEL)
+            3'b000: begin // ADDITION
+                temp = A + B;
+                RESULT = temp[3:0];
+                CARRY  = temp[4];
+            end
+            3'b001: begin // SUBTRACTION
+                temp = A - B;
+                RESULT = temp[3:0];
+                CARRY  = temp[4];
+            end
+            3'b010: begin // AND
+                RESULT = A & B;
+                CARRY  = 0;
+            end
+            3'b011: begin // OR
+                RESULT = A | B;
+                CARRY  = 0;
+            end
+            3'b100: begin // XOR
+                RESULT = A ^ B;
+                CARRY  = 0;
+            end
+            3'b101: begin // NOT (A)
+                RESULT = ~A;
+                CARRY  = 0;
+            end
+            3'b110: begin // Shift Left
+                RESULT = A << 1;
+                CARRY  = 0;
+            end
+            3'b111: begin // Shift Right
+                RESULT = A >> 1;
+                CARRY  = 0;
+            end
+            default: begin
+                RESULT = 4'b0000;
+                CARRY  = 0;
+            end
+        endcase
+
+        // ZERO flag
+        if (RESULT == 4'b0000)
+            ZERO = 1;
+        else
+            ZERO = 0;
+    end
+endmodule
